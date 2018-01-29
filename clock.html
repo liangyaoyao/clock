@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Canvas时钟</title>
+</head>
+<body>
+	 
+	<canvas width="200" height="200" id="canvas" style="display: block;margin:200px auto;">
+		您的浏览器不支持canvas，请更新您的浏览器！！！
+	</canvas>
+	<script type="text/javascript">
+		var canvas = document.getElementById("canvas");
+		var cxt = canvas.getContext("2d");
+		var width = cxt.canvas.width;
+		var height = cxt.canvas.height;
+		var r = width / 2;
+		
+        setInterval(function(){
+        	update();
+        	updateTime();
+        },1000);
+		 
+		function update(){
+			cxt.clearRect(0,0,width,height);
+			var now = new Date();
+			var hour = now.getHours();
+			var second = now.getSeconds();
+			var minute = now.getMinutes();
+			drawBackground();
+			drawHour(hour,minute);
+			drawMinutes(minute);
+			drawSeconds(second);
+			draDot();
+			cxt.restore();
+		}
+
+		function draDot(){
+			cxt.save();
+			cxt.beginPath();
+			cxt.fillStyle = "white";
+			cxt.arc(0, 0, 3, 0, 2*Math.PI, false);
+			cxt.fill();
+			cxt.restore();
+		}
+
+		function drawSeconds(second){
+			cxt.save();
+        	cxt.beginPath();
+        	cxt.fillStyle = "red";
+        	var rad = 2 * Math.PI / 60 * second;
+        	cxt.rotate(rad);
+        	cxt.lineWidth = 2;
+        	cxt.lineCap = 'round';
+        	cxt.moveTo(-2, 20);
+        	cxt.lineTo(2, 20);
+        	cxt.lineTo(1, -r + 18);
+        	cxt.lineTo(-1,-r +18);
+        	cxt.fill();
+        	cxt.restore();
+		}
+
+		function drawHour(hour, minutes){
+		    cxt.save();
+        	cxt.beginPath();
+        	var rad = 2 * Math.PI / 12 * hour;
+        	var mrad = 2 * Math.PI / 12 / 60 * minutes;
+        	cxt.rotate(rad + mrad);
+        	cxt.lineWidth = 6;
+        	cxt.lineCap = 'round';
+        	cxt.moveTo(0, 10);
+        	cxt.lineTo(0, -r / 2);
+        	cxt.stroke();
+        	cxt.restore();
+        }
+
+    	function drawMinutes(minutes){
+    		cxt.save();
+    		cxt.beginPath();
+    		var rad = 2 * Math.PI / 60 * minutes;
+    		cxt.rotate( rad );
+    		cxt.lineWidth = 3;
+    		cxt.lineCap = 'round';
+    		cxt.moveTo(0, 10);
+    		cxt.lineTo(0, -r + 30);
+    		cxt.stroke();
+    		cxt.restore();
+    	}
+
+		function drawBackground(){
+			cxt.save();
+      		cxt.translate(r , r);
+      		cxt.beginPath();
+      		cxt.lineWidth = 10;
+      		cxt.strokeStyle = "#000";
+        	cxt.arc(0 , 0, r-5 , 0 , 2*Math.PI,false);
+        	cxt.stroke();
+
+        var hourNumbers = [3,4,5,6,7,8,9,10,11,12,1,2];
+        cxt.font = "bold 14px Arial";
+        cxt.textAlign = 'center';
+        cxt.textBaseline = 'middle';
+        hourNumbers.forEach(function(number , i){
+        	var rad = 2 * Math.PI / 12 * i;
+        	var x = (r - 30) * Math.cos( rad );
+        	var y = (r - 30) * Math.sin( rad );  
+        		
+        	    cxt.fillText(number, x , y);
+        });
+
+        for( var i = 0; i < 60; i++){
+        	var rad = 2 * Math.PI / 60 * i;
+        	var x = Math.cos(rad) * (r - 18 );
+        	var y = Math.sin(rad) * (r - 18);
+        	cxt.beginPath();
+        	if( i % 5 ==0 ){
+        		cxt.fillStyle = "#000";
+        		cxt.arc(x, y, 3, 0, 2*Math.PI, false);
+        	}else{
+        		cxt.fillStyle = "#ccc";
+        		cxt.arc(x, y, 2, 0, 2*Math.PI, false);
+        	}       	
+        	cxt.fill();
+        }
+// drawBackground结束
+       
+
+	}
+	</script>
+</body>
+</html>
